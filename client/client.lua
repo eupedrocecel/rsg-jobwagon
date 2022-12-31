@@ -120,8 +120,6 @@ end)
 
 -- store wagon
 RegisterNetEvent('rsg-jobwagon:client:storewagon', function()
-    print(SpawnedWagon)
-    print(wagonSpawned)
     if wagonSpawned == true then
         DeletePed(SpawnedWagon)
         SetEntityAsNoLongerNeeded(SpawnedWagon)
