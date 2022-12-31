@@ -1,4 +1,5 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
+local wagontype = nil
 
 -- setup wagon
 RegisterServerEvent('rsg-jobwagon:server:SetupWagon', function()
@@ -6,6 +7,9 @@ RegisterServerEvent('rsg-jobwagon:server:SetupWagon', function()
     local Player = RSGCore.Functions.GetPlayer(src)
     local isBoss = Player.PlayerData.job.isboss
     local job = Player.PlayerData.job.name
+    if job == 'wholesaletrader' then
+        wagontype = Config.WholesaleTrader
+    end
     if isBoss == true then
         local result = MySQL.prepare.await("SELECT COUNT(*) as count FROM job_wagons WHERE job = ?", { job })
         if result == 0 then
@@ -13,8 +17,8 @@ RegisterServerEvent('rsg-jobwagon:server:SetupWagon', function()
             MySQL.insert('INSERT INTO job_wagons(job, plate, wagon, active) VALUES(@job, @plate, @wagon, @active)', {
                 ['@job'] = job,
                 ['@plate'] = plate,
-                ['@wagon'] = 'CART01',
-                ['@active'] = false,
+                ['@wagon'] = wagontype,
+                ['@active'] = 1,
             })
             TriggerClientEvent('RSGCore:Notify', src, 'successfully setup your company wagon', 'success')
         else
@@ -23,29 +27,6 @@ RegisterServerEvent('rsg-jobwagon:server:SetupWagon', function()
     else
         TriggerClientEvent('RSGCore:Notify', src, 'you are not the boss', 'error')
     end
-end)
-
--- get company wagons
-RSGCore.Functions.CreateCallback('rsg-jobwagon:server:GetWagons', function(source, cb)
-    local src = source
-    local Player = RSGCore.Functions.GetPlayer(src)
-    local GetWagons = {}
-    local jobwagons = MySQL.query.await('SELECT * FROM job_wagons WHERE job=@job', {
-        ['@job'] = Player.PlayerData.job.name,
-    })    
-    if jobwagons[1] ~= nil then
-        cb(jobwagons)
-    end
-end)
-
--- set active wagon
-RegisterServerEvent('rsg-jobwagon:server:SetActiveWagon', function(plate)
-    local src = source
-    local Player = RSGCore.Functions.GetPlayer(src)
-    local job = Player.PlayerData.job.name
-    local activewagon = MySQL.scalar.await('SELECT plate FROM job_wagons WHERE job = ? AND active = ?', {job, true})
-    MySQL.update('UPDATE job_wagons SET active = ? WHERE plate = ? AND job = ?', { false, activewagon, job })
-    MySQL.update('UPDATE job_wagons SET active = ? WHERE plate = ? AND job = ?', { true, plate, job })
 end)
 
 -- get active wagon
@@ -60,10 +41,11 @@ RSGCore.Functions.CreateCallback('rsg-jobwagon:server:GetActiveWagon', function(
     if (result[1] ~= nil) then
         cb(result[1])
     else
-        return
+        cb(nil)
     end
 end)
 
+-- generate wagon plate
 function GeneratePlate()
     local UniqueFound = false
     local plate = nil
