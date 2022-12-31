@@ -8,7 +8,10 @@ Config.WholesaleTraderSpawn = vector4(2333.1894, -1479.587, 45.956836, 148.38502
 Config.MaxWeight = 500000
 Config.MaxSlots = 40
 
---[[ cart information
+--[[ 
+--------------------------
+cart information
+--------------------------
 wagontraveller01x
 wagon06x
 wagon05x
@@ -42,4 +45,5 @@ cart01
 buggy03
 buggy02
 buggy01
+--------------------------
 --]]

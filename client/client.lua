@@ -2,6 +2,8 @@ local RSGCore = exports['rsg-core']:GetCoreObject()
 local WagonPlate = nil
 local spawncoords = nil
 local spawnheading = nil
+local cargohash = nil
+local lightupgardehash = nil
 local SpawnedWagon = nil
 local wagonSpawned = false
 
@@ -58,37 +60,28 @@ RegisterNetEvent('rsg-jobwagon:client:SpawnWagon', function()
         if data ~= nil then
             if wagonSpawned == false then
                 local ped = PlayerPedId()
-                local model = GetHashKey(data.wagon)
+                local modelhash = GetHashKey(data.wagon)
                 local playerjob = RSGCore.Functions.GetPlayerData().job.name
                 local plate = data.plate
                 -------------------------------------------------------------
                 if playerjob == 'wholesaletrader' then
                     spawncoords = Config.WholesaleTraderSpawn
+                    cargohash = GetHashKey('pg_teamster_wagon04x_gen')
+                    lightupgardehash = GetHashKey('pg_teamster_wagon04x_lightupgrade3')
                 end
-                RequestModel(model)
-                while not HasModelLoaded(model) do
-                    Wait(100)
+                -------------------------------------------------------------
+                RequestModel(modelhash)
+                while not HasModelLoaded(modelhash) do
+                    Citizen.Wait(0)
                 end
-                Wait(1000)
-                local vehicle = CreateVehicle(model, spawncoords, true, false)
-                SetModelAsNoLongerNeeded(model)
-                Citizen.InvokeNative(0x58A850EAEE20FAA3, vehicle, true) -- PlaceObjectOnGroundProperly
-                while not DoesEntityExist(vehicle) do
-                    Wait(10)
-                end
-                Wait(100)
-                getControlOfEntity(vehicle)
-                Citizen.InvokeNative(0x283978A15512B2FE, vehicle, true) -- SetRandomOutfitVariation
-                Citizen.InvokeNative(0x23F74C2FDA6E7C61, 631964804, vehicle) -- BlipAddForEntity
-                Citizen.InvokeNative(0x9CB1A1623062F402, vehicle, 'Supply Wagon') -- SetBlipName
-                local playerHash = `PLAYER`
-                Citizen.InvokeNative(0xADB3F206518799E8, vehicle, playerHash) -- SetPedRelationshipGroupDefaultHash
-                Citizen.InvokeNative(0xCC97B29285B1DC3B, vehicle, 1) -- SetAnimalMood
-                Citizen.InvokeNative(0x931B241409216C1F , PlayerPedId(), vehicle , 0) -- SetPedOwnsAnimal
-                SetModelAsNoLongerNeeded(model)
-                SetPedNameDebug(vehicle, plate)
-                SetPedPromptName(vehicle, plate)
-                SpawnedWagon = vehicle
+                local wagon = CreateVehicle(modelhash, spawncoords, true, false)
+                SetVehicleOnGroundProperly(wagon)
+                Wait(200)
+                SetPedIntoVehicle(ped, wagon, -1)
+                SetModelAsNoLongerNeeded(modelhash)
+                Citizen.InvokeNative(0xD80FAF919A2E56EA, wagon, cargohash)
+                Citizen.InvokeNative(0xC0F0417A90402742, wagon, lightupgardehash) 
+                SpawnedWagon = wagon
                 wagonSpawned = true
                 RSGCore.Functions.Notify('company wagon taken out', 'primary')
             else
@@ -127,15 +120,3 @@ RegisterNetEvent('rsg-jobwagon:client:storewagon', function()
         wagonSpawned = false
     end
 end)
-
--- getControlOfEntity()
-function getControlOfEntity(entity)
-    NetworkRequestControlOfEntity(entity)
-    SetEntityAsMissionEntity(entity, true, true)
-    local timeout = 2000
-    while timeout > 0 and NetworkHasControlOfEntity(entity) == nil do
-        Wait(100)
-        timeout = timeout - 100
-    end
-    return NetworkHasControlOfEntity(entity)
-end
