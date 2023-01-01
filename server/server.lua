@@ -1,5 +1,4 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
-local wagontype = nil
 
 -- setup wagon
 RegisterServerEvent('rsg-jobwagon:server:SetupWagon', function()
@@ -7,17 +6,13 @@ RegisterServerEvent('rsg-jobwagon:server:SetupWagon', function()
     local Player = RSGCore.Functions.GetPlayer(src)
     local isBoss = Player.PlayerData.job.isboss
     local job = Player.PlayerData.job.name
-    if job == 'wholesaletrader' then
-        wagontype = Config.WholesaleTrader
-    end
     if isBoss == true then
         local result = MySQL.prepare.await("SELECT COUNT(*) as count FROM job_wagons WHERE job = ?", { job })
         if result == 0 then
             local plate = GeneratePlate()
-            MySQL.insert('INSERT INTO job_wagons(job, plate, wagon, active) VALUES(@job, @plate, @wagon, @active)', {
+            MySQL.insert('INSERT INTO job_wagons(job, plate, active) VALUES(@job, @plate, @active)', {
                 ['@job'] = job,
                 ['@plate'] = plate,
-                ['@wagon'] = wagontype,
                 ['@active'] = 1,
             })
             TriggerClientEvent('RSGCore:Notify', src, 'successfully setup your company wagon', 'success')

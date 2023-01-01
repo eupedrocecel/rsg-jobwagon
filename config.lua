@@ -1,12 +1,27 @@
 Config = {}
 
--- wholesale trader settings
-Config.WholesaleTrader = 'wagon04x'
-Config.WholesaleTraderSpawn = vector4(2333.1894, -1479.587, 45.956836, 148.38502)
+-- job settings
+Config.JobsSettings = {
 
--- settings
-Config.MaxWeight = 500000
-Config.MaxSlots = 40
+    ['stdeniswholesale'] = {
+        carthash = GetHashKey('wagon04x'),
+        spawncoords = vector4(2333.1894, -1479.587, 45.956836, 148.38502),
+        cargohash = GetHashKey('pg_teamster_wagon04x_gen'),
+        lightupgardehash = GetHashKey('pg_teamster_wagon04x_lightupgrade3'),
+        maxweight = 500000,
+        maxslots = 40,
+    },
+    
+    ['blkwholesale'] = {
+        carthash = GetHashKey('wagon04x'),
+        spawncoords = vector4(-738.3441, -1345.372, 43.855888, 185.47911),
+        cargohash = GetHashKey('pg_teamster_wagon04x_gen'),
+        lightupgardehash = GetHashKey('pg_teamster_wagon04x_lightupgrade3'),
+        maxweight = 500000,
+        maxslots = 40,
+    },
+
+}
 
 --[[ 
 --------------------------
