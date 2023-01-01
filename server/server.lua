@@ -15,12 +15,12 @@ RegisterServerEvent('rsg-jobwagon:server:SetupWagon', function()
                 ['@plate'] = plate,
                 ['@active'] = 1,
             })
-            TriggerClientEvent('RSGCore:Notify', src, 'successfully setup your company wagon', 'success')
+            TriggerClientEvent('RSGCore:Notify', src, Lang:t('success.wagon_setup_successfully'), 'success')
         else
-            TriggerClientEvent('RSGCore:Notify', src, 'you already have a company wagon', 'error')
+            TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.already_have_wagon'), 'error')
         end
     else
-        TriggerClientEvent('RSGCore:Notify', src, 'you are not the boss', 'error')
+        TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.not_the_boss'), 'error')
     end
 end)
 

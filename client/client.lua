@@ -51,11 +51,11 @@ end)
 RegisterNetEvent('rsg-jobwagon:client:openWagonMenu', function()
     exports['rsg-menu']:openMenu({
         {
-            header = 'Wagon Menu',
+            header = Lang:t('menu.wagon_menu'),
             isMenuHeader = true,
         },
         {
-            header = "Setup Wagon (Boss)",
+            header = Lang:t('menu.wagon_setup'),
             txt = "",
             icon = "fas fa-box",
             params = {
@@ -65,7 +65,7 @@ RegisterNetEvent('rsg-jobwagon:client:openWagonMenu', function()
             }
         },
         {
-            header = "Get Wagon",
+            header = Lang:t('menu.wagon_get'),
             txt = "",
             icon = "fas fa-box",
             params = {
@@ -75,7 +75,7 @@ RegisterNetEvent('rsg-jobwagon:client:openWagonMenu', function()
             }
         },
         {
-            header = "Store Wagon",
+            header = Lang:t('menu.wagon_store'),
             txt = "",
             icon = "fas fa-box",
             params = {
@@ -85,7 +85,7 @@ RegisterNetEvent('rsg-jobwagon:client:openWagonMenu', function()
             }
         },
         {
-            header = ">> Close Menu <<",
+            header = Lang:t('menu.close_menu'),
             txt = '',
             params = {
                 event = 'rsg-menu:closeMenu',
@@ -115,12 +115,12 @@ RegisterNetEvent('rsg-jobwagon:client:SpawnWagon', function()
                 Citizen.InvokeNative(0xC0F0417A90402742, wagon, lightupgardehash) 
                 SpawnedWagon = wagon
                 wagonSpawned = true
-                RSGCore.Functions.Notify('company wagon taken out', 'primary')
+                RSGCore.Functions.Notify(Lang:t('primary.wagon_out'), 'primary')
             else
-                RSGCore.Functions.Notify('your company wagon is already out', 'primary')
+                RSGCore.Functions.Notify(Lang:t('primary.wagon_already_out'), 'primary')
             end
         else
-            RSGCore.Functions.Notify('no wagon setup', 'error')
+            RSGCore.Functions.Notify(Lang:t('error.no_wagon_setup'), 'error')
         end
     end)
 end)
@@ -148,7 +148,7 @@ RegisterNetEvent('rsg-jobwagon:client:storewagon', function()
     if wagonSpawned == true then
         DeletePed(SpawnedWagon)
         SetEntityAsNoLongerNeeded(SpawnedWagon)
-        RSGCore.Functions.Notify('company wagon stored', 'success')
+        RSGCore.Functions.Notify(Lang:t('success.wagon_stored'), 'success')
         wagonSpawned = false
     end
 end)
