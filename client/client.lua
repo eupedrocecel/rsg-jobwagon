@@ -146,7 +146,7 @@ end)
 -- store wagon
 RegisterNetEvent('rsg-jobwagon:client:storewagon', function()
     if wagonSpawned == true then
-        DeletePed(SpawnedWagon)
+        DeleteVehicle(SpawnedWagon)
         SetEntityAsNoLongerNeeded(SpawnedWagon)
         RSGCore.Functions.Notify(Lang:t('success.wagon_stored'), 'success')
         wagonSpawned = false
